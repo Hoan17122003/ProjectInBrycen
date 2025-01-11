@@ -1,0 +1,11 @@
+streamlit
+langchain
+sqlalchemy 
+pymysql 
+redis
+langchain_google_genai 
+langchain_experimental 
+langchain 
+langchain_community 
+pandas 
+langchain_core

@@ -1,0 +1,113 @@
+
+services:
+  # api:
+  #   container_name: api_container
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - DB_HOST=mysql
+  #     - DB_PORT=3309
+  #     - DB_USERNAME=root
+  #     - DB_PASSWORD=HoanHa
+  #     - DB_NAME=ChatBoxDB
+  #     - NEO4J_URI=bolt://neo4j:7687
+  #     - NEO4J_USER=neo4j
+  #     - NEO4J_PASSWORD=12345678
+  #   env_file:
+  #     - .env.test
+  #     - .env.prod
+  #   depends_on:
+  #     - redis
+  #     - mysql
+  #     - neo4j
+  #   networks:
+  #     - api-networks
+  
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      - api-networks
+    volumes:
+      - redis_data:/data
+    env_file:
+      - .env.prod
+
+  mysql:
+    container_name: ChatBoxDB_container
+    image: mysql:latest
+    restart : always
+    environment:
+      MYSQL_ROOT_PASSWORD: HoanHa
+      MYSQL_DATABASE: ChatBoxDB
+      MYSQL_PASSWORD: HoanHa
+    ports:
+      - "3306:3306"
+    volumes:
+        - mysql_data:/var/lib/mysql
+    networks:
+      - api-networks
+    env_file:
+      - .env.prod
+
+  # neo4j:
+  #   # image: neo4j:enterprise
+  #   # # restart: always
+  #   # ports: 
+  #   # - "7474:7474" 
+  #   # - "7687:7687"
+  #   # environment:
+  #   #   - NEO4J_AUTH=neo4j/12345678  # Thay đổi mật khẩu nếu cần
+  #   #   - NEO4J_ACCEPT_LICENSE_AGREEMENT=eval
+  #   #   - NEO4J_PLUGINS='["apoc"]'
+  #   #   - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687 
+  #   #   - NEO4J_dbms_connector_http_listen__address=0.0.0.0:7474
+  #   #   - NEO4J_dbms_connector_bolt_tls__level=DISABLED
+  #   #   - NEO4J_apoc_export_file_enabled=true 
+  #   #   - NEO4J_apoc_import_file_enabled=true 
+  #   #   - NEO4J_apoc_import_file_use__neo4j__config=true 
+  #   #   - NEO4J_dbms_security_procedures_unrestricted=apoc.\\\*
+  #   # volumes:
+  #   # - ./data:/data 
+  #   # - neo4j_logs:/logs 
+  #   # - ./plugins:/plugins
+  #   # networks:
+  #   #   - api-networks
+  #   image: neo4j:latest
+  #   environment:
+  #     - NEO4J_AUTH=neo4j/12345678
+  #     # Cho phép APOC procedures không bị giới hạn
+  #     - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+  #     # Cài đặt APOC plugin
+  #     - NEO4J_dbms_security_procedures_allowlist=apoc.*
+  #     - NEO4J_apoc_export_file_enabled=true
+  #     - NEO4J_apoc_import_file_enabled=true
+  #     # Enable APOC plugin installation
+  #     - NEO4J_PLUGINS=["apoc"]
+  #   ports:
+  #     - "7474:7474"
+  #     - "7687:7687"
+  #   volumes:
+  #     - neo4j_data:/data
+  #     - neo4j_plugins:/plugins
+
+
+volumes:
+  mysql_data:
+  redis_data:
+  # neo4j_data: 
+  # # neo4j_logs: 
+  # # neo4j_import: 
+  # neo4j_plugins:
+ 
+
+networks:
+  api-networks:
+    driver: bridge
